@@ -20,6 +20,7 @@ export const useAuth = () => {
 
     const registration = async (username:string, password:string) => {
         await $api.post<IAuthResponse>(`/register?username=${username}&password=${password}`)
+        
     }
 
     const isAuth = () => {
@@ -39,6 +40,6 @@ export const useAuth = () => {
         logout,
         isAuth,
         init,
-        registration
+        registration,
     }
 }

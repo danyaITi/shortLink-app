@@ -90,7 +90,8 @@
         text-decoration: none;
         color: white;
         border-radius: 10px;
-        font-family: 'Montserrat', sans-serif;
+        font-family: 'Montserrat', sans-serif; 
+        font-size: 16px !important;
         letter-spacing: 2px;
         background-image: linear-gradient(to right, #9EEFE1 0%, #4830F0 51%, #9EEFE1 100%);
         background-size: 200% auto;
@@ -133,4 +134,15 @@
     justify-content: center;
     margin-top: 1rem;
     color: red;
+}
+
+.err404{
+    display: block;
+    margin: 0px auto;
+    @media (max-width:920px) {
+        width: 300px;
+    }
+    @media (max-width:500px) {
+        width: 200px;
+    }
 }
