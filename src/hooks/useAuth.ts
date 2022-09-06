@@ -1,14 +1,14 @@
 import {useContext} from "react";
 import {Context} from "../index";
 import $api from "../api";
-import {AuthResp} from "../models/authResp";
+import {IAuthResponse} from "../types/IAuthResponse";
 
 export const useAuth = () => {
 
     const {store} = useContext(Context)
 
     const login = async (username:string, password:string) => {
-        const resp = await $api.post<AuthResp>('/login?', `username=${username}&password=${password}`)
+        const resp = await $api.post<IAuthResponse>('/login?', `username=${username}&password=${password}`)
         setToken(resp.data.access_token)
         store.setAuth(true);
     }
@@ -19,7 +19,7 @@ export const useAuth = () => {
     }
 
     const registration = async (username:string, password:string) => {
-        await $api.post<AuthResp>(`/register?username=${username}&password=${password}`)
+        await $api.post<IAuthResponse>(`/register?username=${username}&password=${password}`)
     }
 
     const isAuth = () => {

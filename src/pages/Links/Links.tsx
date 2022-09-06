@@ -13,7 +13,8 @@ const Links: React.FC = () => {
     const [shortLink, setShortLink] = useState<string>('')
     const [offset, setOffset] = useState(0)
     const [hasMore, setHasMore] = useState(false)
-    const [sortOrder, setSortOrder] = useState('asc_short'); 
+    const [sortOrder, setSortOrder] = useState('asc_short');
+    const [error, setError] = useState<string | null>(null)
 
     const { statistics, fetchStatistics, selectSort } = useStatistics();
     const { squeeze } = useSqueeze();
@@ -37,8 +38,15 @@ const Links: React.FC = () => {
     }
 
 	const getShortLink = async () => {
-		const squeezeLink = await squeeze(link)
-		setShortLink(squeezeLink.data.short)
+        setError(null)
+        try {
+            const squeezeLink = await squeeze(link)
+            setShortLink(squeezeLink.data.short)
+        }
+		catch (e: any) {
+            setShortLink('')
+            setError('Неверный формат ссылки')
+        }
 	}
 
     const loadFunc = async () => {
@@ -52,11 +60,36 @@ const Links: React.FC = () => {
 
 
     const sortHandler = (key: string | null) => {
-        if(key){
-            const sort = `asc_${key}`
-            selectSort(sort)
-            setSortOrder(sort)
+        if(key) {
+            let keyOrder = ''
+            if(sortOrder.indexOf(key) !== -1) {
+                if(sortOrder.indexOf('asc') !== -1) {
+                    keyOrder = 'desc_' + key
+                }
+                else {
+                    keyOrder = 'asc_' + key
+                }
+            }
+            else {
+                keyOrder = 'asc_' + key
+            }
+            setSortOrder(keyOrder)
+            selectSort(keyOrder)
         }
+    }
+
+    const getSortIcon = (key: string | null) => {
+        if(key) {
+            if(sortOrder.indexOf(key) !== -1) {
+                if(sortOrder.indexOf('asc') !== -1) {
+                    return '▲'
+                }
+                else {
+                    return '▼'
+                }
+            }
+        }
+        return ''
     }
 
     return(
@@ -72,9 +105,10 @@ const Links: React.FC = () => {
                 </Row>
             <Row>
                 <Col>
-                    {shortLink && <div className="short-link">Ваша ссылка: {generateLink(shortLink)} </div>}
+                    {error && <div className="error">{error}</div>}
+                    {shortLink && <div className="short-link">Ваша ссылка: <span onClick={() => {navigator.clipboard.writeText(generateLink(shortLink))}} className="short-link__clipboard">{generateLink(shortLink)}</span></div>}
                 </Col>
-            </Row> 
+            </Row>
 
             <Dropdown onSelect={(e:any) => sortHandler(e)}>
                 <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -82,9 +116,9 @@ const Links: React.FC = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu  >
-                    <Dropdown.Item eventKey={"short"}>Short {sortOrder === 'asc_short' ? (<span>↓</span>) : (<span>☻</span>)}</Dropdown.Item>
-                    <Dropdown.Item eventKey={"target"}>Target {sortOrder === 'asc_target' ? (<span>↓</span>) : (<span>☻</span>)}</Dropdown.Item>
-                    <Dropdown.Item eventKey={"counter"}>Count {sortOrder === 'asc_counter' ? (<span>↓</span>) : (<span>☻</span>)}</Dropdown.Item>
+                    <Dropdown.Item eventKey={"short"}>Short {getSortIcon('short')}</Dropdown.Item>
+                    <Dropdown.Item eventKey={"target"}>Target {getSortIcon('target')}</Dropdown.Item>
+                    <Dropdown.Item eventKey={"counter"}>Count {getSortIcon('counter')}</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
 
@@ -98,12 +132,11 @@ const Links: React.FC = () => {
                         </thead>
 
                         <InfiniteScroll
-
                             pageStart={0}
                             loadMore={loadFunc}
                             hasMore={hasMore}
                             element={'tbody'}
-                            loader={<div className="loader">Loading ...</div>}
+                            loader={<div className="loader" key={0}>Loading ...</div>}
                         >
                             {statistics.map((item,i) =>
                                 (

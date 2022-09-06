@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import $api from "../api";
-import { IStatistics } from "../models/authResp";
+import {IStatistics} from "../types/IStatistics";
 
 export const useStatistics = () => {
 	const [statistics, setStatistics] = useState<IStatistics[]>([]);
