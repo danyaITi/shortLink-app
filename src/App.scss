@@ -5,14 +5,17 @@ html{
 }
 
 *{
+    text-decoration: none;
+    list-style: none;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     outline: 0;
 }
 
+
 .App{
-    height: 100vh;
+    min-height: 100vh;
     background-image: url('./assets/img/bg-01.jpg');
     background-size: cover;
     display: flex;

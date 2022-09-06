@@ -10,10 +10,9 @@ export default class AuthServices {
     static async login (username:string, password:string): Promise<AxiosResponse<AuthResp>> {
         return $api.post<AuthResp>('/login?', `username=${username}&password=${password}`)
     }
-
-    static async logout (): Promise<void> {
-        return $api.post('/logout')
+    static isAuth(){
+        return !!localStorage.getItem('token')
     }
-    
+
 }
 

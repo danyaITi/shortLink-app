@@ -3,10 +3,16 @@
     border-radius: 10px;
     padding: 0px 20px;
     height: 75%;
-    width: 25%;
+    width: 35%;
     background-color: white;
     display: inline-flex;
     flex-direction: column;
+    @media screen and (max-width:1000px) {
+        width: 55%;
+      }
+      @media screen and (max-width:450px) {
+        width: 85%;
+      }
     h1{
       padding: 40px 0px;
       text-align: center;

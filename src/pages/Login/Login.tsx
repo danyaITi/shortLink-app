@@ -6,17 +6,17 @@ import user from '../../assets/img/username.png'
 import passw from '../../assets/img/password.png'
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"
-import Links from "../Links/Links";
-
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const navigate = useNavigate();
 
   const {store} = useContext(Context)
-
-  if(store.isAuth){
-    return <Links/>
+  if(store.isAuth) {
+    return <Navigate to='/'/>
   }
 
   const featureAnimation = {
@@ -31,19 +31,29 @@ const Login: React.FC = () => {
     }),
   }
 
+
+  const login = async () => {
+      try {
+        await store.login(username,password)
+        navigate('/')
+      } catch (e) {
+          console.log(e)
+      }
+  }
+
   return (
     <motion.div className="login-content" initial="hidden" whileInView="visible" viewport={{amount:0.3, once:true}} custom={1} variants={featureAnimation}>
       <h1>LOGIN</h1>
       <div className="wrap-input100 validate-input m-b-23 input-username" data-validate = "Username is reauired">
 				<span className="label-input100">Username</span>
         <img src={user} alt=""/>
-				<input 
-        className="input100" 
-        type="text" 
-        name="username" 
+				<input
+        className="input100"
+        type="text"
+        name="username"
         placeholder="Type your username"
         value={username}
-        onChange={(e)=>setUsername(e.target.value) } 
+        onChange={(e)=>setUsername(e.target.value) }
         />
 				<span className="focus-input100" data-symbol="&#xf206;"></span>
 			</div>
@@ -52,9 +62,9 @@ const Login: React.FC = () => {
 				<span className="label-input100">Password</span>
         <img src={passw} alt="" />
 				<input
-         className="input100" 
-         type="password" 
-         name="pass" 
+         className="input100"
+         type="password"
+         name="pass"
          placeholder="Type your password"
          onChange={(e)=>setPassword(e.target.value) }
          value={password}/>
@@ -63,14 +73,12 @@ const Login: React.FC = () => {
 
       <span className="login-forgot"><div>Forgot password?</div></span>
 
-    <Link to='/links'>
-      <button onClick={()=>store.login(username,password)}>Login</button>
-    </Link>
-      
+      <button onClick={()=> login()}>Login</button>
+
 
       <div className="sign-box">
         <span>Haven't account yet?</span>
-        <Link to='/sign'>
+        <Link to='/register'>
           <h5>SIGN UP</h5>
         </Link>
       </div>
