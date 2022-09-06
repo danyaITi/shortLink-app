@@ -4,43 +4,33 @@ import { API_URL } from "../../api";
 import { useSqueeze } from "../../hooks/useSqueeze";
 import { useStatistics } from "../../hooks/useStatistic";
 import './Links.scss'
-import {Navbar} from "../../components/Navbar/Navbar";
-import Sort from "../../components/Sort/Sort";
+import InfiniteScroll from 'react-infinite-scroller';
+import {Col, Container, Dropdown, Row, Table} from "react-bootstrap";
+import {truncateString} from "../../utils/truncate";
 
 const Links: React.FC = () => {
     const [link, setLink] = useState<string>('')
-    const [selected, setSelected] = useState('asc_short')
     const [shortLink, setShortLink] = useState<string>('')
     const [offset, setOffset] = useState(0)
-    const [fetching, setFetching] = useState(true)
-    
+    const [hasMore, setHasMore] = useState(false)
+    const [sortOrder, setSortOrder] = useState('asc_short'); 
 
-    const { statistics, fetchStatistics, addStatistics, setStatistics } = useStatistics();
+    const { statistics, fetchStatistics, selectSort } = useStatistics();
     const { squeeze } = useSqueeze();
 
-    useEffect(()=>{
-        if(fetching){
-			fetchStatistics(selected)
-		}
-    },[fetching, selected])
-	
 
-    useEffect(()=>{
-        document.addEventListener('scroll', scrollHandler)
-
-        return ()=>{
-            document.removeEventListener('scroll',scrollHandler)
-        }
-    },[])
-
-    const scrollHandler = (e: React.UIEvent<HTMLElement>) => {
-        
-    }
+    useEffect(() => {
+        fetchStatistics(0, sortOrder).then(c => {
+            if(c < 20){
+                setHasMore(false)
+            }
+            else {
+                setHasMore(true)
+            }
+        })
+    }, [])
 
 
-    
-
-    
     const generateLink = (short: string) => {
         const baseUrl = API_URL + /s/
         return baseUrl + short
@@ -49,50 +39,87 @@ const Links: React.FC = () => {
 	const getShortLink = async () => {
 		const squeezeLink = await squeeze(link)
 		setShortLink(squeezeLink.data.short)
-
-		const statistic = {
-			short: squeezeLink.data.short,
-			counter: squeezeLink.data.counter,
-			target: squeezeLink.data.target,
-            id: squeezeLink.data.id
-		}
-		addStatistics(statistic)
 	}
 
-    const changeSort = (item:string) => {
-        setSelected(item)
-    }
- 
+    const loadFunc = async () => {
+        const length = await fetchStatistics(offset, sortOrder)
 
+        if (length < 20) {
+            setHasMore(false)
+        }
+        setOffset(offset + 20)
+    }
+
+
+    const sortHandler = (key: string | null) => {
+        if(key){
+            const sort = `asc_${key}`
+            selectSort(sort)
+            setSortOrder(sort)
+        }
+    }
 
     return(
-        <div>
-            <Navbar />
-            <div className="sort-position">
-                <Sort  selected={selected} changeSort={(item)=>changeSort(item)}/>
-            </div>
-            <div style={{margin: '0px 20px'}}>
-                <div className="input-box">
-                    <input type="text" value={link} onChange={(e)=>setLink(e.target.value)} />
-                    <button className="btn-add" onClick={getShortLink}>Сократить</button>
-                </div>
-                <table className="resp-tab"> 
+        <Container>
+                <Row className="input-box justify-content-md-center">
+                    <Col md={6}>
+                        <input type="text" value={link} onChange={(e)=>setLink(e.target.value)} />
+                    </Col>
+                    <Col md={"auto"}>
+                        <button className="btn-add" onClick={getShortLink}>Сократить</button>
+                    </Col>
+
+                </Row>
+            <Row>
+                <Col>
+                    {shortLink && <div className="short-link">Ваша ссылка: {generateLink(shortLink)} </div>}
+                </Col>
+            </Row> 
+
+            <Dropdown onSelect={(e:any) => sortHandler(e)}>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    Сортировать по
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu  >
+                    <Dropdown.Item eventKey={"short"}>Short {sortOrder === 'asc_short' ? (<span>↓</span>) : (<span>☻</span>)}</Dropdown.Item>
+                    <Dropdown.Item eventKey={"target"}>Target {sortOrder === 'asc_target' ? (<span>↓</span>) : (<span>☻</span>)}</Dropdown.Item>
+                    <Dropdown.Item eventKey={"counter"}>Count {sortOrder === 'asc_counter' ? (<span>↓</span>) : (<span>☻</span>)}</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+
+                    <Table className="links-table" striped bordered hover>
                         <thead>
-                            <tr>
-                                <th>Short link</th>
-                                <th>Count:</th>
-                                <th>Original link</th>
-                            </tr>
+                        <tr>
+                            <th>Short</th>
+                            <th>Target</th>
+                            <th>Count</th>
+                        </tr>
                         </thead>
-                        <tbody>
-                            {statistics.map((item)=> (<tr key={item.id}><td>
-                                <span>Short link</span><a target={'_blank'} href={generateLink(item.short)}>{generateLink(item.short)}</a></td>
-                            <td style={{textAlign:'center'}}><span>Count:</span>{item.counter}</td>
-                            <td><span>Original link</span>{item.target}</td></tr>))}
-                        </tbody>
-                </table>
-            </div>
-        </div>
+
+                        <InfiniteScroll
+
+                            pageStart={0}
+                            loadMore={loadFunc}
+                            hasMore={hasMore}
+                            element={'tbody'}
+                            loader={<div className="loader">Loading ...</div>}
+                        >
+                            {statistics.map((item,i) =>
+                                (
+                                    <tr key={i}>
+                                        <td><a target="_blank" href={generateLink(item.short)}>{generateLink(item.short)}</a></td>
+                                        <td><a target="_blank" href={item.target}>{truncateString(item.target, 100)}</a></td>
+                                        <td>{item.counter}</td>
+                                    </tr>
+                                )
+                            )}
+                        </InfiniteScroll>
+
+                    </Table>
+
+
+        </Container>
 
     )
 }

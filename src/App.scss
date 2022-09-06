@@ -1,5 +1,5 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;600&display=swap');
-
 html{
     font-family: 'Poppins', sans-serif;
 }
@@ -13,12 +13,9 @@ html{
     outline: 0;
 }
 
+  
 
 .App{
-    min-height: 100vh;
-    background-image: url('./assets/img/bg-01.jpg');
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding-top: 2rem;
+    
 }

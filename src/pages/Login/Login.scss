@@ -1,8 +1,9 @@
 .login-content{
+  border: 2px solid #333333;
   position: relative;
   border-radius: 10px;
   padding: 0px 20px;
-  height: 550px;
+  height: 600px;
   width: 35%;
   background-color: white;
   display: inline-flex;
@@ -17,7 +18,7 @@
     padding: 40px 0px;
     text-align: center;
   }
-  
+
   .wrap-input100 {
     width: 100%;
     position: relative;
@@ -89,11 +90,11 @@
     .input100:focus + .focus-input100::before {
       width: 100%;
     }
-    
+
     .has-val.input100 + .focus-input100::before {
       width: 100%;
     }
-    
+
   button{
     cursor: pointer;
     padding: 13px 0px;
@@ -154,4 +155,9 @@
       opacity: .8;
     }
   }
+}
+
+.login-form {
+  display: flex;
+  justify-content: center;
 }

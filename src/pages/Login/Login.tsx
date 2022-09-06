@@ -8,11 +8,13 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion"
 import { Navigate } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import {useAuth} from "../../hooks/useAuth";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const navigate = useNavigate();
+  const {login} = useAuth();
 
   const {store} = useContext(Context)
   if(store.isAuth) {
@@ -32,16 +34,19 @@ const Login: React.FC = () => {
   }
 
 
-  const login = async () => {
-      try {
-        await store.login(username,password)
-        navigate('/')
-      } catch (e) {
-          console.log(e)
-      }
-  }
+    const loginHandler = async () => {
+        try {
+            await login(username, password)
+            navigate('/')
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
   return (
+      <div className="login-form">
+
+
     <motion.div className="login-content" initial="hidden" whileInView="visible" viewport={{amount:0.3, once:true}} custom={1} variants={featureAnimation}>
       <h1>LOGIN</h1>
       <div className="wrap-input100 validate-input m-b-23 input-username" data-validate = "Username is reauired">
@@ -71,9 +76,7 @@ const Login: React.FC = () => {
 				<span className="focus-input100" data-symbol="&#xf190;"></span>
 			</div>
 
-      <span className="login-forgot"><div>Forgot password?</div></span>
-
-      <button onClick={()=> login()}>Login</button>
+      <button onClick={()=> loginHandler()}>Login</button>
 
 
       <div className="sign-box">
@@ -83,6 +86,7 @@ const Login: React.FC = () => {
         </Link>
       </div>
     </motion.div>
+      </div>
   );
 }
 

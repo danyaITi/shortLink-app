@@ -2,6 +2,7 @@ import { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import Store from './store/store'
+import {BrowserRouter, HashRouter} from "react-router-dom";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -19,7 +20,9 @@ export const Context = createContext<State>({
 
 
 root.render(
-  <Context.Provider value={{store}}>
-    <App />
-  </Context.Provider>
+  <HashRouter>
+    <Context.Provider value={{store}}>
+      <App />
+    </Context.Provider>
+  </HashRouter>
 );
