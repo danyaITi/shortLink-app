@@ -28,7 +28,7 @@ function App() {
         <>
             <Navbar bg="primary" variant="dark">
                 <Container>
-                    <Navbar.Brand href="#home">Сокращатель ссылок</Navbar.Brand>
+                    <Navbar.Brand>Сокращатель ссылок</Navbar.Brand>
                     {store.isAuth && (
                         <Nav className="justify-content-end">
                             <Nav.Link onClick={logoutHandler}>Выйти</Nav.Link>
