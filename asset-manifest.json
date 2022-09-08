@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/shortLink-app/static/css/main.e5b001ad.css",
+    "main.js": "/shortLink-app/static/js/main.cfbbba03.js",
+    "static/media/password.png": "/shortLink-app/static/media/password.d51b656bb317e364b5e0.png",
+    "static/media/404.png": "/shortLink-app/static/media/404.0100525f88212142c155.png",
+    "index.html": "/shortLink-app/index.html",
+    "main.e5b001ad.css.map": "/shortLink-app/static/css/main.e5b001ad.css.map",
+    "main.cfbbba03.js.map": "/shortLink-app/static/js/main.cfbbba03.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e5b001ad.css",
+    "static/js/main.cfbbba03.js"
+  ]
+}
