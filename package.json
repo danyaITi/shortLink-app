@@ -1,7 +1,7 @@
 {
   "name": "jwt-app",
   "version": "0.1.0",
-  "homepage": "https://danyaITi.github.io/jwt-app",
+  "homepage": "https://danyaITi.github.io/shortLink-app",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",

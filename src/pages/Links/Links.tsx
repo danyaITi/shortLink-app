@@ -162,7 +162,7 @@ const Links: React.FC = () => {
                         )}</>}
                     </InfiniteScroll>
                 </>}
-            </Table> }
+            </Table>}
         </Container>
     )
 }
